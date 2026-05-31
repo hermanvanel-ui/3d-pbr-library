@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3d-pbr-library — Showcase</title>
+<meta name="description" content="Galerie live de toutes les textures PBR de la lib. Chaque texture est appliquée sur une sphère + cube + plan, avec HDRI environment.">
+<style>
+  :root {
+    --noir:#0d0d12; --creme:#F5F0E1; --creme-soft:rgba(245,240,225,0.72);
+    --creme-faint:rgba(245,240,225,0.35); --accent:#C5322D;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--noir); color:var(--creme); font-family:system-ui,-apple-system,sans-serif; }
+
+  header { position:sticky; top:0; z-index:10; background:rgba(13,13,18,0.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(245,240,225,0.1); padding:18px 24px; }
+  header h1 { font-size:14px; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; }
+  header h1 small { font-weight:400; color:var(--creme-faint); margin-left:14px; letter-spacing:0.2em; }
+  header .controls { display:flex; gap:14px; align-items:center; margin-top:12px; flex-wrap:wrap; }
+  header label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--creme-faint); }
+  header select { background:rgba(245,240,225,0.05); color:var(--creme); border:1px solid rgba(245,240,225,0.15); padding:6px 12px; font-size:11px; letter-spacing:0.15em; border-radius:2px; }
+
+  main { padding:24px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:20px; max-width:1400px; margin:0 auto; }
+
+  .card { background:rgba(20,20,28,0.6); border:1px solid rgba(245,240,225,0.08); border-radius:4px; overflow:hidden; transition:all .2s; }
+  .card:hover { border-color:rgba(197,50,45,0.5); transform:translateY(-2px); }
+  .card .canvas-wrap { position:relative; width:100%; aspect-ratio:1.4 / 1; background:#000; }
+  .card canvas { display:block; width:100%; height:100%; }
+  .card .info { padding:14px 16px; border-top:1px solid rgba(245,240,225,0.06); }
+  .card .info .name { font-family:monospace; font-size:11px; color:var(--creme); margin-bottom:4px; }
+  .card .info .label { font-size:13px; font-weight:600; margin-bottom:6px; }
+  .card .info .use-for { font-size:11px; color:var(--creme-faint); letter-spacing:0.05em; }
+  .card .info .category-tag { display:inline-block; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--creme); background:var(--accent); padding:3px 8px; border-radius:2px; margin-bottom:8px; }
+
+  .hdri-section { margin-top:60px; padding-top:30px; border-top:1px solid rgba(245,240,225,0.1); }
+  .hdri-section h2 { font-size:14px; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:20px; }
+  .hdri-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:14px; }
+  .hdri-card { background:rgba(20,20,28,0.6); border:1px solid rgba(245,240,225,0.08); border-radius:4px; padding:16px; }
+  .hdri-card .name { font-family:monospace; font-size:11px; color:var(--creme); margin-bottom:4px; }
+  .hdri-card .label { font-size:13px; font-weight:600; margin-bottom:4px; }
+  .hdri-card .mood { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+  .hdri-card .use-for { font-size:11px; color:var(--creme-faint); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>3d-pbr-library <small>showcase live</small></h1>
+  <div class="controls">
+    <label for="hdri-select">HDRI env :</label>
+    <select id="hdri-select">
+      <option value="venice_sunset" selected>venice_sunset (warm)</option>
+      <option value="studio_small_03">studio_small_03 (neutral)</option>
+      <option value="royal_esplanade">royal_esplanade (daylight)</option>
+      <option value="brown_photostudio_02">brown_photostudio_02 (warm studio)</option>
+      <option value="industrial_sunset_02">industrial_sunset_02 (dramatic)</option>
+    </select>
+    <label for="shape-select">Forme :</label>
+    <select id="shape-select">
+      <option value="sphere" selected>Sphère</option>
+      <option value="cube">Cube</option>
+      <option value="torus">Torus</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="grid"></div>
+
+  <div class="hdri-section">
+    <h2>HDRI environments disponibles</h2>
+    <div class="hdri-list" id="hdri-list"></div>
+  </div>
+</main>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.166.1/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.166.1/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { loadTextureSet, materialFromSet, loadHDRI } from '../loader.js';
+
+// Fetch manifest
+const manifest = await fetch('../manifest.json').then(r => r.json());
+
+// === Global state ===
+let currentHDRI = 'venice_sunset';
+let currentShape = 'sphere';
+let sharedEnv = null;
+
+// === Build one card per texture ===
+const grid = document.getElementById('grid');
+const previews = []; // { scene, camera, renderer, mesh, material, name }
+
+function makePreviewCanvas(texName, texLabel, useFor, category) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="canvas-wrap"><canvas></canvas></div>
+    <div class="info">
+      <div class="category-tag">${category}</div>
+      <div class="name">${texName}</div>
+      <div class="label">${texLabel}</div>
+      <div class="use-for">${useFor.join(' · ')}</div>
+    </div>
+  `;
+  grid.appendChild(card);
+
+  const canvas = card.querySelector('canvas');
+  const cw = canvas.parentElement.offsetWidth || 340;
+  const ch = cw / 1.4;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  renderer.setSize(cw, ch);
+  renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x07070a);
+
+  const camera = new THREE.PerspectiveCamera(35, cw/ch, 0.1, 100);
+  camera.position.set(0, 0.4, 3);
+  camera.lookAt(0, 0, 0);
+
+  // Lights (en plus de l'HDRI env)
+  scene.add(new THREE.AmbientLight(0xF5F0E1, 0.2));
+  const key = new THREE.DirectionalLight(0xFFE8C0, 1.2);
+  key.position.set(2, 3, 3);
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x88AABF, 0.4);
+  fill.position.set(-3, 1, 2);
+  scene.add(fill);
+
+  // Load texture set
+  const texSet = loadTextureSet(texName, { res:'1k', repeat:[2, 2] });
+  const material = materialFromSet(texSet, {
+    metalness: category === 'metal' ? 0.7 : 0.0,
+    roughness: 1.0,
+    envMapIntensity: 1.2,
+  });
+
+  // Mesh
+  let geometry;
+  if (currentShape === 'sphere') geometry = new THREE.SphereGeometry(1, 64, 32);
+  else if (currentShape === 'cube') geometry = new THREE.BoxGeometry(1.4, 1.4, 1.4);
+  else geometry = new THREE.TorusKnotGeometry(0.7, 0.25, 128, 16);
+
+  const mesh = new THREE.Mesh(geometry, material);
+  if (geometry.attributes.uv && !geometry.attributes.uv2) {
+    geometry.setAttribute('uv2', geometry.attributes.uv);
+  }
+  scene.add(mesh);
+
+  previews.push({ scene, camera, renderer, mesh, material, name: texName, canvas });
+}
+
+// === Render loop ===
+const clock = new THREE.Clock();
+function renderAll() {
+  const dt = clock.getDelta();
+  previews.forEach(p => {
+    p.mesh.rotation.y += dt * 0.4;
+    p.mesh.rotation.x += dt * 0.1;
+    if (sharedEnv) p.scene.environment = sharedEnv;
+    p.renderer.render(p.scene, p.camera);
+  });
+  requestAnimationFrame(renderAll);
+}
+
+// === Build grid ===
+for (const [category, textures] of Object.entries(manifest.categories)) {
+  for (const t of textures) {
+    makePreviewCanvas(t.name, t.label, t.use_for, category);
+  }
+}
+
+// === Load initial HDRI ===
+async function loadCurrentHDRI() {
+  const dummyScene = new THREE.Scene();
+  sharedEnv = await loadHDRI(currentHDRI, { res: '1k' });
+}
+await loadCurrentHDRI();
+renderAll();
+
+// === HDRI selector ===
+document.getElementById('hdri-select').addEventListener('change', async (e) => {
+  currentHDRI = e.target.value;
+  await loadCurrentHDRI();
+});
+
+// === Shape selector ===
+document.getElementById('shape-select').addEventListener('change', (e) => {
+  currentShape = e.target.value;
+  previews.forEach(p => {
+    p.mesh.geometry.dispose();
+    if (currentShape === 'sphere') p.mesh.geometry = new THREE.SphereGeometry(1, 64, 32);
+    else if (currentShape === 'cube') p.mesh.geometry = new THREE.BoxGeometry(1.4, 1.4, 1.4);
+    else p.mesh.geometry = new THREE.TorusKnotGeometry(0.7, 0.25, 128, 16);
+    if (p.mesh.geometry.attributes.uv && !p.mesh.geometry.attributes.uv2) {
+      p.mesh.geometry.setAttribute('uv2', p.mesh.geometry.attributes.uv);
+    }
+  });
+});
+
+// === HDRI list section ===
+const hdriList = document.getElementById('hdri-list');
+for (const h of manifest.hdris) {
+  const card = document.createElement('div');
+  card.className = 'hdri-card';
+  card.innerHTML = `
+    <div class="name">${h.name}</div>
+    <div class="label">${h.label}</div>
+    <div class="mood">${h.mood}</div>
+    <div class="use-for">${h.use_for.join(' · ')}</div>
+  `;
+  hdriList.appendChild(card);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+{
+  "name": "3d-pbr-library",
+  "version": "1.0.0",
+  "license": "CC0 (assets from polyhaven.com)",
+  "description": "Curated library of PBR textures + HDRIs for Three.js / R3F / Babylon. All assets CC0 from Polyhaven, referenced by URL (no local download required).",
+  "cdn": {
+    "textures": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/{res}/{name}/{name}_{map}_{res}.jpg",
+    "hdris": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/{res}/{name}_{res}.hdr"
+  },
+  "maps_available": {
+    "diff": "Albedo / color map (sRGB)",
+    "nor_gl": "Normal map (OpenGL convention — Three.js, Babylon)",
+    "nor_dx": "Normal map (DirectX convention — Unity)",
+    "rough": "Roughness map (linear)",
+    "ao": "Ambient occlusion map (linear)",
+    "disp": "Displacement / height map (linear)",
+    "arm": "Combined AO/Roughness/Metalness (linear, R=AO G=Rough B=Metal)"
+  },
+  "resolutions": ["1k", "2k", "4k"],
+  "categories": {
+    "wood": [
+      {
+        "name": "wood_floor",
+        "label": "Parquet bois clair",
+        "use_for": ["sol intérieur", "loft moderne", "scandinave"],
+        "color_hint": "#C8A87A"
+      },
+      {
+        "name": "worn_planks",
+        "label": "Planches usées vintage",
+        "use_for": ["Beurré comptoir", "atelier", "rustique"],
+        "color_hint": "#8B6342"
+      },
+      {
+        "name": "weathered_planks",
+        "label": "Planches érodées",
+        "use_for": ["façade ancienne", "patrimoine", "Le battant atelier"],
+        "color_hint": "#6E5238"
+      },
+      {
+        "name": "plywood",
+        "label": "Contreplaqué brut",
+        "use_for": ["moderne minimaliste", "DIY", "structures temporaires"],
+        "color_hint": "#D5B68A"
+      },
+      {
+        "name": "wood_table_001",
+        "label": "Surface table bois propre",
+        "use_for": ["plateaux table", "bureau", "détail"],
+        "color_hint": "#A07952"
+      }
+    ],
+    "metal": [
+      {
+        "name": "metal_plate_02",
+        "label": "Plaque métal industriel",
+        "use_for": ["Le battant atelier", "industriel", "cyberpunk"],
+        "color_hint": "#5D6065"
+      },
+      {
+        "name": "corrugated_iron_03",
+        "label": "Tôle ondulée",
+        "use_for": ["façade industrielle", "hangar", "atelier"],
+        "color_hint": "#9CA0A6"
+      },
+      {
+        "name": "rusty_metal_02",
+        "label": "Métal rouillé",
+        "use_for": ["décor industriel patiné", "abandonné", "Mr Robot vibe"],
+        "color_hint": "#7A4A30"
+      }
+    ],
+    "plaster": [
+      {
+        "name": "painted_plaster_wall",
+        "label": "Mur plâtre peint blanc",
+        "use_for": ["intérieur loft", "galerie", "Le battant"],
+        "color_hint": "#E8E4D6"
+      },
+      {
+        "name": "beige_wall_001",
+        "label": "Mur beige stucco",
+        "use_for": ["maison méditerranéenne", "Beurré façade", "chaleur"],
+        "color_hint": "#CFC0A0"
+      }
+    ],
+    "brick": [
+      {
+        "name": "red_brick_03",
+        "label": "Brique rouge classique",
+        "use_for": ["loft new-yorkais", "industriel", "façade ancienne"],
+        "color_hint": "#8E4634"
+      },
+      {
+        "name": "brick_wall_006",
+        "label": "Mur de brique vieilli",
+        "use_for": ["intérieur restaurant", "Beurré accent", "vintage"],
+        "color_hint": "#6E4032"
+      }
+    ],
+    "concrete": [
+      {
+        "name": "concrete_floor_02",
+        "label": "Béton ciré gris",
+        "use_for": ["sol industriel", "atelier", "studio moderne"],
+        "color_hint": "#7C7D80"
+      },
+      {
+        "name": "painted_concrete",
+        "label": "Béton peint clair",
+        "use_for": ["sol galerie", "minimaliste", "showroom"],
+        "color_hint": "#B8B6B0"
+      }
+    ],
+    "stone": [
+      {
+        "name": "cobblestone_floor_06",
+        "label": "Pavés irréguliers",
+        "use_for": ["extérieur vieille ville", "rue", "ambiance européenne"],
+        "color_hint": "#7A736A"
+      },
+      {
+        "name": "marble_01",
+        "label": "Marbre veiné classique",
+        "use_for": ["luxe", "salle de bain premium", "détail haut de gamme"],
+        "color_hint": "#E4E0D6"
+      }
+    ]
+  },
+  "hdris": [
+    {
+      "name": "venice_sunset",
+      "label": "Coucher de soleil chaud (Venise)",
+      "mood": "warm sunset",
+      "use_for": ["showroom premium", "reflets warm sur métal", "hero produit"]
+    },
+    {
+      "name": "studio_small_03",
+      "label": "Studio photo neutre",
+      "mood": "neutral white",
+      "use_for": ["produit propre", "e-commerce", "isolation objet"]
+    },
+    {
+      "name": "royal_esplanade",
+      "label": "Esplanade extérieure",
+      "mood": "natural daylight",
+      "use_for": ["intérieur réaliste", "loft moderne", "rendu naturel"]
+    },
+    {
+      "name": "brown_photostudio_02",
+      "label": "Studio fond brun",
+      "mood": "warm studio",
+      "use_for": ["portrait", "produit chaleureux", "Beurré"]
+    },
+    {
+      "name": "industrial_sunset_02",
+      "label": "Coucher industriel",
+      "mood": "warm dramatic",
+      "use_for": ["atelier Le battant", "fabricant", "showcase dramatique"]
+    },
+    {
+      "name": "abandoned_factory_canteen_02",
+      "label": "Usine abandonnée intérieur",
+      "mood": "moody industrial",
+      "use_for": ["cyberpunk", "Mr Robot vibe", "hacker collective"]
+    },
+    {
+      "name": "quarry_01",
+      "label": "Carrière extérieure",
+      "mood": "natural outdoor",
+      "use_for": ["paysage", "naturel cool", "extérieur jour"]
+    },
+    {
+      "name": "forest_slope",
+      "label": "Pente forestière",
+      "mood": "natural green",
+      "use_for": ["scène extérieure naturelle", "vert", "calme"]
+    }
+  ]
+}
