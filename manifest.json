@@ -52,22 +52,67 @@
     ],
     "metal": [
       {
+        "name": "painted_metal_shutter",
+        "label": "⭐ Alu thermolaqué pour volet (Le battant)",
+        "use_for": ["VOLETS Le battant", "alu thermolaqué", "panel métal peint"],
+        "color_hint": "#A8A89C",
+        "note": "Texture sur-mesure pour volets battants. À tinter via material.color (vert-volet, crème, noir, rouge)."
+      },
+      {
+        "name": "box_profile_metal_sheet",
+        "label": "Tôle profil rainuré architectural",
+        "use_for": ["bardage façade", "couverture", "alu profilé"],
+        "color_hint": "#8A8C90"
+      },
+      {
+        "name": "blue_metal_plate",
+        "label": "Plaque métal bleu peint",
+        "use_for": ["accent métal coloré", "industrial moderne"],
+        "color_hint": "#5A6878"
+      },
+      {
+        "name": "factory_wall",
+        "label": "Mur usine béton/métal",
+        "use_for": ["façade industrielle", "atelier extérieur", "Le battant hangar"],
+        "color_hint": "#7C7E80"
+      },
+      {
         "name": "metal_plate_02",
-        "label": "Plaque métal industriel",
-        "use_for": ["Le battant atelier", "industriel", "cyberpunk"],
+        "label": "Plaque métal industriel générique",
+        "use_for": ["industriel", "hangar", "métal usé"],
         "color_hint": "#5D6065"
       },
       {
         "name": "corrugated_iron_03",
         "label": "Tôle ondulée",
-        "use_for": ["façade industrielle", "hangar", "atelier"],
+        "use_for": ["façade industrielle", "hangar"],
         "color_hint": "#9CA0A6"
       },
       {
-        "name": "rusty_metal_02",
-        "label": "Métal rouillé",
-        "use_for": ["décor industriel patiné", "abandonné", "Mr Robot vibe"],
+        "name": "rusted_shutter",
+        "label": "Volet rusty (vintage)",
+        "use_for": ["vintage Beurré façade", "patrimoine", "abandonné"],
         "color_hint": "#7A4A30"
+      }
+    ],
+    "exterior": [
+      {
+        "name": "brick_floor",
+        "label": "Sol pavé brique",
+        "use_for": ["allée d'entrée", "courtyard", "patio Beurré"],
+        "color_hint": "#8E5A3C"
+      },
+      {
+        "name": "asphalt_03",
+        "label": "Asphalte rugueux",
+        "use_for": ["route", "parking", "extérieur urbain"],
+        "color_hint": "#3A3A3C"
+      },
+      {
+        "name": "aerial_grass_rock",
+        "label": "Pelouse + rochers vue aérienne",
+        "use_for": ["jardin", "extérieur naturel", "abords maison"],
+        "color_hint": "#7A8754"
       }
     ],
     "plaster": [
